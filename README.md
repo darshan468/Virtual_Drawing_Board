@@ -37,3 +37,55 @@ Hand Detection: MediaPipe identifies hand landmarks
 Gesture Recognition: Finger positions determine actions
 Drawing Engine: Tracks movement and renders on canvas
 Display Output: Final output is shown with overlay
+
+**🧠 Working Principle**
+
+The application continuously processes frames from the webcam and detects hand landmarks using MediaPipe. Based on the relative positions of fingers, specific gestures are identified. The index finger acts as a pointer to draw on a virtual canvas, while other gestures control tool selection such as color change or erasing.
+
+**🎮 Gesture Controls**
+
+| Gesture                  | Function          |
+| ------------------------ | ----------------- |
+| Index finger up          | Drawing mode      |
+| Index + Middle finger up | Selection mode    |
+| Closed fist              | Pause drawing     |
+| Specific gesture         | Eraser activation |
+
+
+**📈 Applications**
+Digital art and design
+Virtual teaching and presentations
+Touchless interfaces (post-COVID applications)
+Gaming and interactive systems
+Assistive technology
+
+**🔧 Future Enhancements**
+
+Save and export drawings
+Add geometric shape recognition
+Multi-user or multi-hand support
+Integration with AI-based gesture classification
+Mobile and web-based deployment
+
+**🤝 Contribution Guidelines**
+
+*Contributions are encouraged to improve the functionality and performance of this project.
+To contribute:*
+
+Fork the repository
+Create a feature branch
+Commit your changes
+Submit a pull request
+
+**📄 License**
+
+This project is distributed under the MIT License.
+
+**👨‍💻 Author**
+
+Darshan S
+GitHub: https://github.com/your-username
+
+**⭐ Acknowledgment**
+
+If you find this project useful, consider giving it a ⭐ to support further development.
