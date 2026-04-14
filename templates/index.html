@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Drawing Board Pro</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #13141f;
+            --accent-1: #6d28d9;
+            --accent-2: #2dd4bf;
+            --accent-3: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Mesh Background */
+        .ambient-mesh {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+        .mesh-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.6;
+            animation: drift 20s infinite alternate cubic-bezier(0.5, 0, 0.5, 1);
+        }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--accent-1); }
+        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: var(--accent-2); animation-delay: -5s; }
+        .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--accent-3); opacity: 0.3; animation-delay: -10s; }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 150px) scale(1.1); }
+        }
+
+        .workspace-container {
+            width: 100%;
+            max-width: 1360px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(109, 40, 217, 0.3);
+        }
+
+        .badge-pro {
+            position: absolute;
+            top: 0;
+            right: -50px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transform: translateY(10px) rotate(10deg);
+        }
+
+        .subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 300;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Glassmorphism Video Terminal */
+        .terminal-window {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 1280px;
+            position: relative;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding-left: 10px;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-close { background: #ff5f56; box-shadow: 0 0 10px rgba(255, 95, 86, 0.5); }
+        .dot-min { background: #ffbd2e; box-shadow: 0 0 10px rgba(255, 189, 46, 0.5); }
+        .dot-max { background: #27c93f; box-shadow: 0 0 10px rgba(39, 201, 63, 0.5); }
+
+        .video-feed {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            background: #000;
+            box-shadow: inset 0 0 20px rgba(0,0,0,1);
+        }
+
+        /* Floating Tool Dock */
+        .tool-dock {
+            margin-top: -30px; /* Overlap the terminal slightly */
+            z-index: 10;
+            display: flex;
+            gap: 1.5rem;
+            background: rgba(19, 20, 31, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 1rem 2rem;
+            border-radius: 99px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tool {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 16px;
+            border-radius: 99px;
+        }
+
+        .tool:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+        }
+
+        .tool-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .highlight {
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="ambient-mesh">
+        <div class="mesh-blob blob-1"></div>
+        <div class="mesh-blob blob-2"></div>
+        <div class="mesh-blob blob-3"></div>
+    </div>
+
+    <div class="workspace-container">
+        <header>
+            <h1>Virtual Drawing Board<span class="badge-pro">PRO</span></h1>
+            <div class="subtitle">Computer Vision Studio Environment</div>
+        </header>
+        
+        <div class="terminal-window">
+            <div class="window-controls">
+                <div class="dot dot-close"></div>
+                <div class="dot dot-min"></div>
+                <div class="dot dot-max"></div>
+            </div>
+            <img src="/video_feed" class="video-feed" alt="Video Feed Loading..." onerror="this.onerror=null; this.src=''; this.alt='Waiting for video stream...'; setTimeout(() => this.src='/video_feed?t=' + new Date().getTime(), 1000);"/>
+        </div>
+
+        <div class="tool-dock">
+            <div class="tool">
+                <div class="tool-icon">☝️</div>
+                <span><span class="highlight">1 Finger</span> Draw</span>
+            </div>
+            <div class="tool">
+                <div class="tool-icon">✌️</div>
+                <span><span class="highlight">2 Fingers</span> Color Cycle</span>
+            </div>
+            <div class="tool">
+                <div class="tool-icon">🖐️</div>
+                <span><span class="highlight">5 Fingers</span> Precision Eraser</span>
+            </div>
+            <div class="tool">
+                <div class="tool-icon">✋</div>
+                <span><span class="highlight">4 Fingers</span> Clear Board</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
