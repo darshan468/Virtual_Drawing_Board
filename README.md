@@ -1,6 +1,6 @@
-**🖌️ Virtual Drawing Board using Computer Vision**
+***🖌️ Virtual Drawing Board using Computer Vision***
 
-*📖 Project Description*
+**📖 Project Description**
 
 The Virtual Drawing Board is a real-time computer vision application that enables users to draw digitally in the air using hand gestures. By utilizing a webcam and advanced hand-tracking techniques, the system eliminates the need for traditional input devices such as a mouse, stylus, or touchscreen.
 
