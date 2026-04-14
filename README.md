@@ -84,7 +84,7 @@ This project is distributed under the MIT License.
 **👨‍💻 Author**
 
 Darshan S
-GitHub: https://github.com/your-username
+GitHub: https://github.com/darshan468
 
 **⭐ Acknowledgment**
 
